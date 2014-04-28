@@ -1,0 +1,34 @@
+{
+  "builders": [{
+    "type": "digitalocean",
+    "image_id": "3102387",
+    "region_id": "4",
+    "size_id": "66",
+    "private_networking": true,
+    "snapshot_name": "mojo-debian-{{timestamp}}",
+    "ssh_timeout": "5m"
+  }],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "digitalocean/files",
+      "destination": "/tmp/files"
+    },
+    {
+      "type": "shell",
+      "environment_vars": [
+        "ADMIN_USER=admin",
+        "DEBIAN_FRONTEND=noninteractive"
+      ],
+      "scripts":[
+        "digitalocean/scripts/setup.sh",
+        "shared/scripts/setup.sh",
+        "digitalocean/scripts/setup_kexec.sh",
+        "shared/scripts/setup_admin.sh",
+        "shared/scripts/update_kernel.sh",
+        "shared/scripts/update_init.sh",
+        "digitalocean/scripts/cleanup.sh"
+      ]
+    }
+  ]
+}
