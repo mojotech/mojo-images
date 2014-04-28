@@ -1,0 +1,25 @@
+{
+  "builders": [{
+    "type": "amazon-ebs",
+    "region": "us-east-1",
+    "source_ami": "ami-b7c8d5de",
+    "instance_type": "t1.micro",
+    "ssh_username": "admin",
+    "ssh_timeout": "5m",
+    "ami_name": "mojo-debian-{{timestamp}}"
+  }],
+  "provisioners": [
+    {
+      "type": "shell",
+      "environment_vars": [
+        "DEBIAN_FRONTEND=noninteractive"
+      ],
+      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+      "scripts": [
+        "shared/scripts/setup.sh",
+        "shared/scripts/update_kernel.sh",
+        "shared/scripts/update_init.sh"
+      ]
+    }
+  ]
+}
