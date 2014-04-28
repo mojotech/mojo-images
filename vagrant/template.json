@@ -1,0 +1,107 @@
+{
+  "variables": {
+    "iso_url": "http://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-7.4.0-amd64-netinst.iso",
+    "iso_checksum": "015b0eadeac8e5fb18c74f62d1cc06fb2fbe3eb5",
+    "iso_checksum_type": "sha1"
+  },
+  "builders": [{
+    "vm_name": "mojo-debian",
+    "type": "vmware-iso",
+    "guest_os_type": "debian7-64",
+    "http_directory": "vagrant/files",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "{{user `iso_checksum_type`}}",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "ssh_wait_timeout": "10000s",
+    "tools_upload_flavor": "linux",
+    "boot_command": [
+      "<esc><wait>",
+      "install",
+      " auto",
+      " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+      " debian-installer=en_US",
+      " locale=en_US",
+      " keymap=us",
+      " netcfg/get_hostname=vagrant",
+      " netcfg/get_domain=vm ",
+      "<enter>"
+    ],
+    "disk_size": 10140,
+    "vmx_data": {
+      "memsize": "512",
+      "numvcpus": "1",
+      "cpuid.coresPerSocket": "1"
+    }
+  },{
+    "vm_name": "mojo-debian",
+    "type": "virtualbox-iso",
+    "http_directory": "vagrant/files",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "{{user `iso_checksum_type`}}",
+    "guest_os_type": "Debian_64",
+    "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+    "virtualbox_version_file": ".vbox_version",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "ssh_wait_timeout": "10000s",
+    "boot_command": [
+      "<esc><wait>",
+      "install",
+      " auto",
+      " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+      " debian-installer=en_US",
+      " locale=en_US",
+      " keymap=us",
+      " netcfg/get_hostname=vagrant",
+      " netcfg/get_domain=vm ",
+      "<enter>"
+    ],
+    "shutdown_command": "sudo shutdown -h now",
+    "disk_size": 10140,
+    "vboxmanage": [
+      ["modifyvm", "{{.Name}}", "--memory", "512"],
+      ["modifyvm", "{{.Name}}", "--cpus", "1"]
+    ]
+  }],
+  "provisioners": [{
+    "type": "file",
+    "source": "vagrant/files",
+    "destination": "/tmp/files"
+  },{
+    "type": "shell",
+    "environment_vars": [
+      "ADMIN_USER=vagrant",
+      "DEBIAN_FRONTEND=noninteractive"
+    ],
+    "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+    "scripts": [
+      "vagrant/scripts/setup.sh",
+      "shared/scripts/setup.sh",
+      "shared/scripts/setup_admin.sh",
+      "shared/scripts/update_kernel.sh",
+      "shared/scripts/update_init.sh",
+      "shared/scripts/reboot.sh"
+    ]
+  },{
+    "type": "shell",
+    "pause_before": "20s",
+    "environment_vars": [
+      "ADMIN_USER=vagrant",
+      "DEBIAN_FRONTEND=noninteractive"
+    ],
+    "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+    "scripts": [
+      "vagrant/scripts/install_tools.sh",
+      "vagrant/scripts/cleanup.sh",
+      "vagrant/scripts/zerodisk.sh"
+    ]
+  }],
+  "post-processors": [{
+    "type": "vagrant",
+    "keep_input_artifact": false,
+    "output": "mojo-debian-vagrant-{{.Provider}}-{{timestamp}}.box"
+  }]
+}
