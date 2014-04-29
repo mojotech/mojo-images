@@ -1,4 +1,4 @@
-Mojo Images 
+Mojo Images
 ===========
 Contained herein are [packer](http://www.packer.io/) templates for building and maintaining virtual machine images for Amazon AWS, DigitalOcean, and Vagrant (both VMWare and VirtualBox). The goal is to promote consistency between development, staging, and production environments. This philosophy helps us to catch bugs earlier and avoid issues that would otherwise only arise in a production environment. This lets me get more sleep.
 
@@ -12,8 +12,8 @@ Contained herein are [packer](http://www.packer.io/) templates for building and 
 
 Vagrant boxes:
 
-- [VMWare](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-vmware-201404281607.box)
-- [VirtualBox](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-virtualbox-201404281607.box)
+- [VMWare 6.0.3](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-vmware-1398718482.box)
+- [VirtualBox 4.3.10](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-virtualbox-1398774905.box)
 
 ##Building
 
@@ -37,7 +37,7 @@ Set your DigitalOcean API client ID and API key:
 And then run:
 
 	packer build digitalocean/templates.json
-	
+
 ###Vagrant
 Install VMWare fusion and/or VirtualBox. To build both VMWare and VirtualBox boxes:
 
@@ -46,11 +46,11 @@ Install VMWare fusion and/or VirtualBox. To build both VMWare and VirtualBox box
 To only build VMWare:
 
 	packer build -only=vmware-iso vagrant/templates.json
-	
+
 To only build VirtualBox:
 
 	packer build -only=virtualbox-iso vagrant/templates.json
-	
+
 To add a box to vagrant:
 
 	vagrant box add mojo-debian PATH_TO_BOX
