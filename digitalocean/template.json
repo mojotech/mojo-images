@@ -13,8 +13,12 @@
       "type": "file",
       "source": "digitalocean/files",
       "destination": "/tmp/files"
-    },
-    {
+    },{
+      "type": "file",
+      "source": "shared/files/apt",
+      "destination": "/tmp/files/apt"
+
+    },{
       "type": "shell",
       "environment_vars": [
         "ADMIN_USER=admin",
@@ -22,6 +26,7 @@
       ],
       "scripts":[
         "digitalocean/scripts/setup.sh",
+        "shared/scirpts/setup_apt.sh",
         "shared/scripts/setup.sh",
         "digitalocean/scripts/setup_kexec.sh",
         "shared/scripts/setup_admin.sh",
