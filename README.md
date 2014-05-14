@@ -12,8 +12,8 @@ Contained herein are [packer](http://www.packer.io/) templates for building and 
 
 Vagrant boxes:
 
-- [VMWare 6.0.3](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-vmware-1398718482.box)
-- [VirtualBox 4.3.10](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-virtualbox-1398774905.box)
+- [VMWare 6.0.3](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-vmware-1399125106.box)
+- [VirtualBox 4.3.10](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-virtualbox-1399125106.box)
 
 ##Building
 
