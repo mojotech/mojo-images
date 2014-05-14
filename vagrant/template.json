@@ -71,6 +71,10 @@
     "source": "vagrant/files",
     "destination": "/tmp/files"
   },{
+    "type": "file",
+    "source": "shared/files/apt",
+    "destination": "/tmp/files/apt"
+  },{
     "type": "shell",
     "environment_vars": [
       "ADMIN_USER=vagrant",
@@ -78,6 +82,7 @@
     ],
     "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
     "scripts": [
+      "shared/scripts/setup_apt.sh",
       "vagrant/scripts/setup.sh",
       "shared/scripts/setup.sh",
       "shared/scripts/setup_admin.sh",
