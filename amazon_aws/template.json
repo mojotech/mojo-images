@@ -8,18 +8,20 @@
     "ssh_timeout": "5m",
     "ami_name": "mojo-debian-{{timestamp}}"
   }],
-  "provisioners": [
-    {
-      "type": "shell",
-      "environment_vars": [
-        "DEBIAN_FRONTEND=noninteractive"
-      ],
-      "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
-      "scripts": [
-        "shared/scripts/setup.sh",
-        "shared/scripts/update_kernel.sh",
-        "shared/scripts/update_init.sh"
-      ]
-    }
-  ]
+  "provisioners": [{
+    "type": "file",
+    "source": "shared/files",
+    "destination": "/tmp/files"
+  },{
+  "type": "shell",
+  "environment_vars": [
+    "DEBIAN_FRONTEND=noninteractive"
+  ],
+  "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+  "scripts": [
+    "shared/scripts/setup_apt.sh",
+    "shared/scripts/setup.sh",
+    "shared/scripts/update_kernel.sh",
+    "shared/scripts/update_init.sh"
+  ]}]
 }
