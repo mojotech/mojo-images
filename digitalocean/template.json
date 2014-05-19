@@ -26,7 +26,7 @@
       ],
       "scripts":[
         "digitalocean/scripts/setup.sh",
-        "shared/scirpts/setup_apt.sh",
+        "shared/scripts/setup_apt.sh",
         "shared/scripts/setup.sh",
         "digitalocean/scripts/setup_kexec.sh",
         "shared/scripts/setup_admin.sh",
