@@ -1,7 +1,7 @@
 {
   "builders": [{
     "type": "digitalocean",
-    "image_id": "3102387",
+    "image_id": "3445812",
     "region_id": "4",
     "size_id": "66",
     "private_networking": true,
