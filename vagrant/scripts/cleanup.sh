@@ -21,8 +21,13 @@ apt-get purge -y $(                        \
 # Clean up tmp
 rm -rf /tmp/*
 
+# Clean up apt sources cache
+rm -rf /var/lib/apt/lists/*
+
 if [ -d "/var/lib/dhcp" ]; then
     # Remove leftover leases and persistent rules
     echo "cleaning up dhcp leases"
     rm /var/lib/dhcp/*
 fi
+
+apt-get clean
