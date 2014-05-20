@@ -4,16 +4,16 @@ Contained herein are [packer](http://www.packer.io/) templates for building and 
 
 
 ##Features
-- Debian Wheezy 7.4
-- Backported 3.13 kernel
+- Debian Wheezy 7.5
+- Backported 3.14 kernel
 - Backported systemd
 
 ##Downloads
 
 Vagrant boxes:
 
-- [VMWare 6.0.3](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-vmware-1399125106.box)
-- [VirtualBox 4.3.10](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-virtualbox-1399125106.box)
+- [VMWare 6.0.3](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-vmware-1400544616.box)
+- [VirtualBox 4.3.10](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-virtualbox-1400543559.box)
 
 ##Building
 
