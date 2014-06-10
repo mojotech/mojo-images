@@ -36,20 +36,20 @@ Set your DigitalOcean API client ID and API key:
 
 And then run:
 
-	packer build digitalocean/templates.json
+	packer build digitalocean/template.json
 
 ###Vagrant
 Install VMWare fusion and/or VirtualBox. To build both VMWare and VirtualBox boxes:
 
-	packer build vagrant/templates.json
+	packer build vagrant/template.json
 
 To only build VMWare:
 
-	packer build -only=vmware-iso vagrant/templates.json
+	packer build -only=vmware-iso vagrant/template.json
 
 To only build VirtualBox:
 
-	packer build -only=virtualbox-iso vagrant/templates.json
+	packer build -only=virtualbox-iso vagrant/template.json
 
 To add a box to vagrant:
 
