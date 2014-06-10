@@ -27,6 +27,10 @@ And then run:
 
 	packer build amazon_aws/templates.json
 
+To build a specific kernel version, from a specific AMI (ami-86896dee is the wheezy 7.5 HVM AMI):
+	
+	packer build -var 'kernel_release=wheezy-backports' -var 'kernel_version=3.14-0.bpo.1-amd64' -var 'source_ami=ami-86896dee' amazon_aws/template.json
+
 ###DigitalOcean
 
 Set your DigitalOcean API client ID and API key:
