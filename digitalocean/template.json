@@ -1,4 +1,8 @@
 {
+  "variables": {
+    "kernel_release": "wheezy",
+    "kernel_version": "amd64"
+  },
   "builders": [{
     "type": "digitalocean",
     "image_id": "3445812",
@@ -22,7 +26,9 @@
       "type": "shell",
       "environment_vars": [
         "ADMIN_USER=admin",
-        "DEBIAN_FRONTEND=noninteractive"
+        "DEBIAN_FRONTEND=noninteractive",
+        "KERNEL_RELEASE={{user `kernel_release`}}",
+        "KERNEL_VERSION={{user `kernel_version`}}"
       ],
       "scripts":[
         "digitalocean/scripts/setup.sh",

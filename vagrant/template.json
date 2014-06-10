@@ -2,7 +2,9 @@
   "variables": {
     "iso_url": "http://cdimage.debian.org/cdimage/release/7.5.0/amd64/iso-dvd/debian-7.5.0-amd64-DVD-1.iso",
     "iso_checksum": "efbd5a9d41437f6ea2f16d6743bb9d4a21502897",
-    "iso_checksum_type": "sha1"
+    "iso_checksum_type": "sha1",
+    "kernel_release": "wheezy",
+    "kernel_version": "amd64"
   },
   "builders": [{
     "vm_name": "mojo-debian",
@@ -78,7 +80,9 @@
     "type": "shell",
     "environment_vars": [
       "ADMIN_USER=vagrant",
-      "DEBIAN_FRONTEND=noninteractive"
+      "DEBIAN_FRONTEND=noninteractive",
+      "KERNEL_RELEASE={{user `kernel_release`}}",
+      "KERNEL_VERSION={{user `kernel_version`}}"
     ],
     "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
     "scripts": [

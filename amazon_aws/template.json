@@ -1,12 +1,18 @@
 {
+  "variables": {
+    "source_ami": "ami-b7c8d5de",
+    "kernel_release": "wheezy",
+    "kernel_version": "amd64"
+  },
   "builders": [{
     "type": "amazon-ebs",
     "region": "us-east-1",
-    "source_ami": "ami-b7c8d5de",
-    "instance_type": "t1.micro",
+    "source_ami": "{{user `source_ami`}}",
+    "instance_type": "m3.medium",
     "ssh_username": "admin",
     "ssh_timeout": "5m",
-    "ami_name": "mojo-debian-{{timestamp}}"
+    "ami_name": "mojo_debian_{{user `kernel_version`}}_{{timestamp}}",
+    "ami_description": "source_ami: {{user `source_ami`}}"
   }],
   "provisioners": [{
     "type": "file",
@@ -15,7 +21,9 @@
   },{
   "type": "shell",
   "environment_vars": [
-    "DEBIAN_FRONTEND=noninteractive"
+    "DEBIAN_FRONTEND=noninteractive",
+    "KERNEL_RELEASE={{user `kernel_release`}}",
+    "KERNEL_VERSION={{user `kernel_version`}}"
   ],
   "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
   "scripts": [
