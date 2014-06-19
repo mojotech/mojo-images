@@ -4,18 +4,41 @@ Contained herein are [packer](http://www.packer.io/) templates for building and 
 
 
 ##Features
-- Debian Wheezy 7.5
-- Backported 3.14 kernel
-- Backported systemd
+- debian wheezy 7.5 x64
+- systemd
+- 3.2, 3.12, and 3.14 kernels
 
 ##Downloads
 
 Vagrant boxes:
 
-- [VMWare 6.0.3](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-vmware-1400544616.box)
-- [VirtualBox 4.3.10](http://mojo-boxes.s3.amazonaws.com/mojo-debian-vagrant-virtualbox-1400543559.box)
+- [VirtualBox 4.3.10 (linux kernel 3.2)](http://mojo-boxes.s3.amazonaws.com/mojo-debian-7.5-3.2-0.5-virtualbox.box)
+- [VirtualBox 4.3.10 (linux kernel 3.12)](http://mojo-boxes.s3.amazonaws.com/mojo-debian-7.5-3.12-0.5-virtualbox.box)
+- [VirtualBox 4.3.10 (linux kernel 3.14)](http://mojo-boxes.s3.amazonaws.com/mojo-debian-7.5-3.14-0.5-virtualbox.box)
+- [VMWare 6.0.3 (linux kernel 3.2)](http://mojo-boxes.s3.amazonaws.com/mojo-debian-7.5-3.2-0.5-vmware.box)
+- [VMWare 6.0.3 (linux kernel 3.12)](http://mojo-boxes.s3.amazonaws.com/mojo-debian-7.5-3.12-0.5-vmware.box)
+- [VMWare 6.0.3 (linux kernel 3.14)](http://mojo-boxes.s3.amazonaws.com/mojo-debian-7.5-3.14-0.5-vmware.box)
 
 ##Building
+
+The easiest way to build is with the included ```build``` script. Run ```./build -h``` for help:
+
+
+    usage: build [options]
+
+    options:
+          -h  --help              display this message
+          -v  --version           display version
+          -p  --template=<name>   set template (aws, vagrant, or digitalocean)
+          -s  --source=<id>       set source id (defined in build.json)
+          -k  --kernel=<version>  set kernel version
+          -p  --provider=<name>   set vagrant provider (vmware or virtualbox)
+              --dry-run           process arguments, but don't build anything
+
+    dependencies: jq, vmware fusion, virtualbox
+
+Configuration for each template type are in the included ```build.json```.
+
 
 ###Amazon AWS
 Set your Amazon AWS access key and secret key:
@@ -23,13 +46,13 @@ Set your Amazon AWS access key and secret key:
 	export AWS_ACCESS_KEY='YOUR_ACCESS_KEY'
 	export AWS_SECRET_KEY='YOUR_SECRET_KEY'
 
-And then run:
+To build a the default AMI (currently paravirtualized debian 7.5 with the 3.14 kernel):
 
-	packer build amazon_aws/templates.json
+	./build --template=aws
 
-To build a specific kernel version, from a specific AMI (ami-86896dee is the wheezy 7.5 HVM AMI):
+To build a specific kernel version, from a specific AMI (defined in ```build.json```):
 	
-	packer build -var 'kernel_release=wheezy-backports' -var 'kernel_version=3.14-0.bpo.1-amd64' -var 'source_ami=ami-86896dee' amazon_aws/template.json
+	./build --template=aws --kernel=3.2 --source=debian-7.5-hvm
 
 ###DigitalOcean
 
@@ -40,21 +63,22 @@ Set your DigitalOcean API client ID and API key:
 
 And then run:
 
-	packer build digitalocean/template.json
+	./build --template=do
 
 ###Vagrant
-Install VMWare fusion and/or VirtualBox. To build both VMWare and VirtualBox boxes:
+Install VMWare fusion and/or VirtualBox. To build a VirtualBox box:
+	
+	./build --template=vagrant
 
-	packer build vagrant/template.json
+To build a VMWare box:
 
-To only build VMWare:
-
-	packer build -only=vmware-iso vagrant/template.json
-
-To only build VirtualBox:
-
-	packer build -only=virtualbox-iso vagrant/template.json
+	./build --template=vagrant --provider=vmware-iso
 
 To add a box to vagrant:
 
 	vagrant box add mojo-debian PATH_TO_BOX
+
+##Known Issues
+- Building the VMWare box hangs. It will eventually work, but it takes 30+ minutes to acquire an IP address.
+- Building the DigitalOcean images require manually power cycling the box after the kernel has been updated, or else cleanup tasks will never run.
+- As an artifact of the kexec hack, DigitalOcean images can take a while to boot.
