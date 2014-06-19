@@ -1,0 +1,5 @@
+deb http://apt.withmojo.com/debian local main
+deb http://apt.withmojo.com/debian vendor main
+deb http://apt.withmojo.com/debian wheezy main
+deb http://apt.withmojo.com/debian wheezy-updates main
+deb http://apt.withmojo.com/debian wheezy-backports main
