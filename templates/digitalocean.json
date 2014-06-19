@@ -1,0 +1,51 @@
+{
+  "variables": {
+    "name": "",
+    "image_id": "",
+    "kernel_version": "",
+    "kernel_release": ""
+  },
+  "builders": [{
+    "type": "digitalocean",
+    "image_id": "{{ user `image_id`}}",
+    "region_id": "4",
+    "size_id": "66",
+    "snapshot_name": "{{user `name`}}",
+    "ssh_timeout": "10m"
+  }],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "config",
+      "destination": "/tmp/config"
+    },
+    {
+      "type": "shell",
+      "environment_vars": [
+        "ADMIN_USER=admin",
+        "DEBIAN_FRONTEND=noninteractive",
+        "KERNEL_VERSION={{user `kernel_version`}}",
+        "KERNEL_RELEASE={{user `kernel_release`}}"
+      ],
+      "scripts": [
+        "scripts/setup.sh",
+        "scripts/setup_apt.sh",
+        "scripts/setup_admin.sh",
+        "scripts/update.sh",
+        "scripts/update_kernel.sh",
+        "scripts/update_init.sh",
+        "scripts/reboot.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "pause_before": "180s",
+      "environment_vars": [
+        "DEBIAN_FRONTEND=noninteractive"
+      ],
+      "scripts": [
+        "scripts/cleanup.sh"
+      ]
+    }
+  ]
+}
