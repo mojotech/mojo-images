@@ -9,6 +9,9 @@ if [[ $PACKER_BUILDER_TYPE =~ amazon ]]; then
   # ...which debian doesn't support, so remove it.
   echo Removing broken fstab entries
   sed -i '/\/dev\/xvdb/d' /etc/fstab
+
+  # ...for good
+  mv /tmp/config/10_mounts.cfg /etc/cloud/cloud.cfg.d/
 fi
 
 mv /tmp/config/motd /etc/
