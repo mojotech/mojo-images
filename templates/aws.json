@@ -1,0 +1,62 @@
+{
+  "variables": {
+    "name": "",
+    "source_ami": "",
+    "kernel_version": "",
+    "kernel_release": ""
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "region": "us-east-1",
+    "source_ami": "{{user `source_ami`}}",
+    "instance_type": "m3.medium",
+    "ssh_username": "admin",
+    "ssh_timeout": "5m",
+    "ami_name": "{{user `name`}}",
+    "ami_description": "source_ami: {{user `source_ami`}}, kernel_version: {{user `kernel_version`}}"
+  }],
+  "provisioners": [{
+    "type": "file",
+    "source": "config",
+    "destination": "/tmp/config"
+  },
+  {
+    "type": "shell",
+    "environment_vars": [
+      "DEBIAN_FRONTEND=noninteractive"
+    ],
+    "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+    "scripts": [
+      "scripts/setup.sh",
+      "scripts/setup_apt.sh",
+      "scripts/update.sh",
+      "scripts/reboot.sh"
+    ]
+  },
+  {
+    "type": "shell",
+    "pause_before": "20s",
+    "environment_vars": [
+      "DEBIAN_FRONTEND=noninteractive",
+      "KERNEL_VERSION={{user `kernel_version`}}",
+      "KERNEL_RELEASE={{user `kernel_release`}}"
+    ],
+    "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+    "scripts": [
+      "scripts/update_kernel.sh",
+      "scripts/update_init.sh",
+      "scripts/reboot.sh"
+    ]
+  },
+  {
+    "type": "shell",
+    "pause_before": "20s",
+    "environment_vars": [
+      "DEBIAN_FRONTEND=noninteractive"
+    ],
+    "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
+    "scripts": [
+      "scripts/cleanup.sh"
+    ]
+  }]
+}
