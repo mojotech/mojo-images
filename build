@@ -1,0 +1,109 @@
+#!/bin/bash -e
+
+lookup() { jq -r ''$1' // empty' build.json; }
+
+while getopts ":s:k:t:p:dhv-:" o; do
+  case "${o}" in
+    (-)
+      case "${OPTARG}" in
+        (dry-run) dry_run=1 ;;
+        (help) print_help=1 ;;
+        (version) print_version=1 ;;
+        (source=*) source_id="${OPTARG#*=}" ;;
+        (kernel=*) kernel_id="${OPTARG#*=}" ;;
+        (template=*) template="${OPTARG#*=}" ;;
+        (provider=*) provider="${OPTARG#*=}" ;;
+        (*)
+          echo unknown option: "${OPTARG%=*}";
+          exit 1
+          ;;
+      esac
+      ;;
+    (d) dry_run=1 ;;
+    (h) print_help=1 ;;
+    (v) print_version=1 ;;
+    (s) source_id=$OPTARG ;;
+    (k) kernel_id=$OPTARG ;;
+    (t) template=$OPTARG ;;
+    (p) provider=$OPTARG ;;
+    (*)
+      echo unknown option: "${o}";
+      exit 1
+      ;;
+  esac
+done
+
+if [ ! -z "$print_help" ]; then
+  echo "
+  usage: build [options]
+
+  options:
+        -h  --help              display this message
+        -v  --version           display version
+        -p  --template=<name>   set template (aws, vagrant, or digitalocean)
+        -s  --source=<id>       set source id (defined in build.json)
+        -k  --kernel=<version>  set kernel version
+        -p  --provider=<name>   set vagrant provider (vmware or virtualbox)
+            --dry-run           process arguments, but don't build anything
+
+  dependencies: jq, vmware fusion, virtualbox
+"
+  exit 0
+fi
+
+hash jq 2>/dev/null || { echo missing dependency: jq 1>&2; exit 1; }
+
+version="$(lookup .version)"
+[ -z "$print_version" ] || { echo "$version"; exit 0; }
+
+case "$template" in
+  (*aws)
+    source_id="${source_id-$(lookup .default.aws_source)}"
+    ami="$(lookup .aws_sources[\"$source_id\"])"
+    [ -z "$ami" ] && { echo missing option: source 1>&2; exit 1; }
+    options="-var source_ami=$ami templates/aws.json"
+    ;;
+  (d*o*)
+    source_id="${source_id-$(lookup .default.digitalocean_source)}"
+    image="$(lookup .digitalocean_sources[\"$source_id\"])"
+    [ -z "$image" ] && { echo missing option: source 1>&2; exit 1; }
+    options="-var image_id=$image templates/digitalocean.json"
+    ;;
+  (vag*)
+    source_id="${source_id-$(lookup .default.vagrant_source)}"
+    iso_url="$(lookup .vagrant_sources[\"$source_id\"].url)"
+    iso_sum="$(lookup .vagrant_sources[\"$source_id\"].sum)"
+    provider="${provider-$(lookup .default.vagrant_provider)}"
+    if [ -z "$iso_url" ] || [ -z "$iso_sum" ]; then
+      echo missing option: source 1>&2
+      exit 1
+    fi
+    [ -z "$provider" ] || options="-only=$provider"
+    options="$options -var iso_url=$iso_url -var iso_checksum=$iso_sum templates/vagrant.json"
+    ;;
+  (*)
+    if [ -z "$template" ]; then
+      echo missing option: template 1>&2
+      exit 1
+    else
+      echo invalid option: template 1>&2
+      exit 1
+    fi
+    ;;
+esac
+
+kernel_id="${kernel_id-$(lookup .default.kernel)}"
+kernel_version="$(lookup .kernels[\"$kernel_id\"].version)"
+kernel_release="$(lookup .kernels[\"$kernel_id\"].release)"
+if [ -z "$kernel_version" ] || [ -z "$kernel_release" ]; then
+  echo missing option: kernel 1>&2
+  exit 1
+fi
+
+command="packer build -var name=mojo-$source_id-$kernel_id-$version -var kernel_version=$kernel_version -var kernel_release=$kernel_release $options"
+
+if [ -z "$dry_run" ]; then
+  $command
+else
+  echo $command
+fi
