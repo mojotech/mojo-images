@@ -1,16 +1,18 @@
 {
   "variables": {
-    "iso_url": "http://cdimage.debian.org/cdimage/release/7.5.0/amd64/iso-dvd/debian-7.5.0-amd64-DVD-1.iso",
-    "iso_checksum": "efbd5a9d41437f6ea2f16d6743bb9d4a21502897",
-    "iso_checksum_type": "sha1",
-    "kernel_release": "wheezy",
-    "kernel_version": "amd64"
+    "name": "",
+    "kernel_version": "",
+    "kernel_release": "",
+    "iso_url": "",
+    "iso_checksum": "",
+    "iso_checksum_type": "sha1"
   },
   "builders": [{
     "vm_name": "mojo-debian",
     "type": "vmware-iso",
+    "headless": true,
     "guest_os_type": "debian7-64",
-    "http_directory": "vagrant/files",
+    "http_directory": "config",
     "iso_url": "{{user `iso_url`}}",
     "iso_checksum": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
@@ -39,7 +41,8 @@
   },{
     "vm_name": "mojo-debian",
     "type": "virtualbox-iso",
-    "http_directory": "vagrant/files",
+    "headless": true,
+    "http_directory": "config",
     "iso_url": "{{user `iso_url`}}",
     "iso_checksum": "{{user `iso_checksum`}}",
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
@@ -70,29 +73,25 @@
   }],
   "provisioners": [{
     "type": "file",
-    "source": "vagrant/files",
-    "destination": "/tmp/files"
-  },{
-    "type": "file",
-    "source": "shared/files/apt",
-    "destination": "/tmp/files/apt"
+    "source": "config",
+    "destination": "/tmp/config"
   },{
     "type": "shell",
     "environment_vars": [
       "ADMIN_USER=vagrant",
       "DEBIAN_FRONTEND=noninteractive",
-      "KERNEL_RELEASE={{user `kernel_release`}}",
-      "KERNEL_VERSION={{user `kernel_version`}}"
+      "KERNEL_VERSION={{user `kernel_version`}}",
+      "KERNEL_RELEASE={{user `kernel_release`}}"
     ],
     "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
     "scripts": [
-      "shared/scripts/setup_apt.sh",
-      "vagrant/scripts/setup.sh",
-      "shared/scripts/setup.sh",
-      "shared/scripts/setup_admin.sh",
-      "shared/scripts/update_kernel.sh",
-      "shared/scripts/update_init.sh",
-      "shared/scripts/reboot.sh"
+      "scripts/setup.sh",
+      "scripts/setup_apt.sh",
+      "scripts/setup_admin.sh",
+      "scripts/update.sh",
+      "scripts/update_kernel.sh",
+      "scripts/update_init.sh",
+      "scripts/reboot.sh"
     ]
   },{
     "type": "shell",
@@ -103,14 +102,14 @@
     ],
     "execute_command": "{{.Vars}} sudo -E bash '{{.Path}}'",
     "scripts": [
-      "vagrant/scripts/install_tools.sh",
-      "vagrant/scripts/cleanup.sh",
-      "vagrant/scripts/zerodisk.sh"
+      "scripts/install_tools.sh",
+      "scripts/cleanup.sh",
+      "scripts/cleanup_disk.sh"
     ]
   }],
   "post-processors": [{
     "type": "vagrant",
     "keep_input_artifact": false,
-    "output": "mojo-debian-vagrant-{{.Provider}}-{{timestamp}}.box"
+    "output": "{{user `name`}}-{{.Provider}}.box"
   }]
 }
