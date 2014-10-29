@@ -1,5 +1,5 @@
 {
-  "version": "0.5.1",
+  "version": "0.5.2",
   "default": {
     "kernel": "3.14",
     "aws_source": "debian-7.5-pv",
@@ -32,6 +32,6 @@
     }
   },
   "digitalocean_sources": {
-    "debian-7.5": "3445812"
+    "debian-7.5": "5562742"
   }
 }
