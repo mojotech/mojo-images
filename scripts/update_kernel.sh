@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+# Enable memory quotas on HMV AMIs with supported kernel versions
+if [[ -d "/boot/extlinux" ]] && echo "${KERNEL_VERSION%%-*}" "3.2" | awk '{exit ($1 > $2)}'; then
+  sed -ri '/EXTLINUX_PARAMETERS/ s/"(.*)"/"\1 cgroup_enable=memory swapaccount=1"/' /etc/default/extlinux
+fi
+
 apt-get install -y --no-install-recommends ${KERNEL_RELEASE+-t $KERNEL_RELEASE} linux-image-${KERNEL_VERSION}
 
 # On AWS HVM AMIs, extlinux won't automatically boot into the new kernel
