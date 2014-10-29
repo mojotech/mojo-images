@@ -33,18 +33,7 @@
         "scripts/setup_admin.sh",
         "scripts/update.sh",
         "scripts/update_kernel.sh",
-        "scripts/update_init.sh",
-        "scripts/reboot.sh"
-      ]
-    },
-    {
-      "type": "shell",
-      "pause_before": "180s",
-      "environment_vars": [
-        "DEBIAN_FRONTEND=noninteractive"
-      ],
-      "scripts": [
-        "scripts/cleanup.sh"
+        "scripts/update_init.sh"
       ]
     }
   ]
