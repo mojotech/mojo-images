@@ -1,5 +1,5 @@
 {
-  "version": "0.5.2",
+  "version": "0.5.3",
   "default": {
     "kernel": "3.14",
     "aws_source": "debian-7.5-pv",
