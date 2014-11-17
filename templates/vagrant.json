@@ -32,7 +32,7 @@
       " netcfg/get_domain=vm ",
       "<enter>"
     ],
-    "disk_size": 10140,
+    "disk_size": 60000,
     "vmx_data": {
       "memsize": "512",
       "numvcpus": "1",
@@ -65,7 +65,7 @@
       "<enter>"
     ],
     "shutdown_command": "sudo shutdown -h now",
-    "disk_size": 10140,
+    "disk_size": 60000,
     "vboxmanage": [
       ["modifyvm", "{{.Name}}", "--memory", "512"],
       ["modifyvm", "{{.Name}}", "--cpus", "1"]
